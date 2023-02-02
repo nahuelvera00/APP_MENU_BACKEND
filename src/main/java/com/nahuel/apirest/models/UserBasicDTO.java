@@ -18,7 +18,7 @@ public class UserBasicDTO {
         
     }
 
-    public UserBasicDTO(Long id, String name, String surname, int cellphone, String email) {
+    public UserBasicDTO(Long id, String username, String surname, int cellphone, String email) {
         this.id = id;
         this.name = name;
         this. surname = surname;
