@@ -4,7 +4,6 @@ import com.nahuel.apirest.entities.User;
 import com.nahuel.apirest.models.UserBasicDTO;
 import com.nahuel.apirest.models.UserDTO;
 import com.nahuel.apirest.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
