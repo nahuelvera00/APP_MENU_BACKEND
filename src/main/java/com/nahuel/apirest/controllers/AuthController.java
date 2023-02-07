@@ -1,10 +1,9 @@
 package com.nahuel.apirest.controllers;
 
+import com.nahuel.apirest.auth.JwtResponse;
 import com.nahuel.apirest.models.LoginDTO;
-import com.nahuel.apirest.models.UserBasicDTO;
 import com.nahuel.apirest.models.UserDTO;
-import com.nahuel.apirest.services.AuthServices;
-import com.nahuel.apirest.utils.JWTUtil;
+import com.nahuel.apirest.services.AuthenticationServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,23 +15,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthServices authServices;
+    private final AuthenticationServices authServices;
 
-    public AuthController(AuthServices authServices) {
+    public AuthController(AuthenticationServices authServices) {
         this.authServices = authServices;
     }
 
-    @Autowired
-    private JWTUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO userData) {
+    public ResponseEntity<JwtResponse> login(@RequestBody LoginDTO userData) {
 
         return authServices.login(userData);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserDTO userData) {
+    public ResponseEntity<JwtResponse> register(@RequestBody UserDTO userData) {
         return authServices.register(userData);
     }
 
