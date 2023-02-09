@@ -1,15 +1,11 @@
 package com.nahuel.apirest.controllers;
 
-import com.nahuel.apirest.auth.JwtResponse;
-import com.nahuel.apirest.models.LoginDTO;
+import com.nahuel.apirest.models.LoginResponseDTO;
+import com.nahuel.apirest.models.LoginRequestDTO;
 import com.nahuel.apirest.models.UserDTO;
 import com.nahuel.apirest.services.AuthenticationServices;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -23,14 +19,19 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody LoginDTO userData) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO userData) {
 
         return authServices.login(userData);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<JwtResponse> register(@RequestBody UserDTO userData) {
+    public ResponseEntity<LoginResponseDTO> register(@RequestBody UserDTO userData) {
         return authServices.register(userData);
+    }
+
+    @PostMapping("/profile")
+    public ResponseEntity<LoginResponseDTO> profile(@RequestHeader(value="Authorization") String token) {
+        return authServices.profile(token);
     }
 
 }

@@ -1,8 +1,8 @@
 package com.nahuel.apirest.services;
 
-import com.nahuel.apirest.auth.JwtResponse;
+import com.nahuel.apirest.models.LoginResponseDTO;
 import com.nahuel.apirest.entities.User;
-import com.nahuel.apirest.models.LoginDTO;
+import com.nahuel.apirest.models.LoginRequestDTO;
 import com.nahuel.apirest.models.UserDTO;
 import com.nahuel.apirest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class AuthenticationServices {
      * @param user loginDTO (email, password)
      * @return JWT Token
      */
-    public ResponseEntity<JwtResponse> login(LoginDTO user) {
+    public ResponseEntity<LoginResponseDTO> login(LoginRequestDTO user) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -42,7 +42,32 @@ public class AuthenticationServices {
                 .orElseThrow();
 
         var jwtToken = jwtService.generateToken(userLogin);
-        return ResponseEntity.ok(new JwtResponse(jwtToken));
+        return ResponseEntity.ok(
+                new LoginResponseDTO(
+                        userLogin.getId(),
+                        userLogin.getName(),
+                        userLogin.getSurname(),
+                        userLogin.getCellphone(),
+                        userLogin.getEmail(),
+                        jwtToken));
+    }
+
+    public ResponseEntity<LoginResponseDTO> profile(String token) {
+        String emailUser = jwtService.extractUsername(token.replace("Bearer ", ""));
+        Optional<User> user = userRepository.findByEmail(emailUser);
+
+        if(!user.isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(new LoginResponseDTO(
+                user.get().getId(),
+                user.get().getName(),
+                user.get().getSurname(),
+                user.get().getCellphone(),
+                user.get().getEmail(),
+                token.replace("Bearer ", "")
+        ));
     }
 
     /**
@@ -50,7 +75,7 @@ public class AuthenticationServices {
      * @param userData (name, surname, cellphone, email, password)
      * @return JWT token
      */
-    public ResponseEntity<JwtResponse> register(UserDTO userData) {
+    public ResponseEntity<LoginResponseDTO> register(UserDTO userData) {
         Optional<User> UserExist = userRepository.findByEmail(userData.getEmail());
 
         // Verify that the email is not in use
@@ -61,11 +86,13 @@ public class AuthenticationServices {
         // todo Validate fields
 
         User newUser = new User(
+                null,
                 userData.getName(),
                 userData.getSurname(),
                 userData.getCellphone(),
                 userData.getEmail(),
-                passwordEncoder.encode(userData.getPassword())
+                passwordEncoder.encode(userData.getPassword()),
+                null
         );
 
         //Save new user
@@ -73,7 +100,14 @@ public class AuthenticationServices {
 
         //Generate JWT
         var jwtToken = jwtService.generateToken(newUser);
-        return ResponseEntity.ok(new JwtResponse(jwtToken));
+        return ResponseEntity.ok(
+                new LoginResponseDTO(
+                        newUser.getId(),
+                        newUser.getName(),
+                        newUser.getSurname(),
+                        newUser.getCellphone(),
+                        newUser.getEmail(),
+                        jwtToken));
 
     }
 }

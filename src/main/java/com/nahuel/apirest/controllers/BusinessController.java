@@ -1,26 +1,28 @@
 package com.nahuel.apirest.controllers;
 
+import com.nahuel.apirest.models.BusinessDTO;
 import com.nahuel.apirest.services.BusinessServices;
-import com.nahuel.apirest.services.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/business")
 public class BusinessController {
 
-    public BusinessServices businessServices;
-    private final JwtService jwtService;
+    private final BusinessServices businessServices;
 
 
     @GetMapping("/hello")
     public String hello(@RequestHeader(value="Authorization") String token) {
 
-        return jwtService.extractUsername(token.replace("Bearer ", ""));
+        return businessServices.hello(token);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<String> addBusiness(@RequestHeader(value="Authorization") String token, @RequestBody BusinessDTO business) {
+        return businessServices.create(token, business);
     }
 
 }

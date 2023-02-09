@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity //Define esta clase como una entidad para poderla crear en la DB
@@ -20,24 +22,39 @@ import java.util.Collection;
 public class  User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //Genera una ID autoincrementable segun la ID mas grande en la DB
-    @Column(name="id") //Setea el nombre de la Columna
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1,
+            initialValue = 100
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    ) //Genera una ID autoincrementable segun la ID mas grande en la DB
     private Long id;
 
+    @Column(name="name")
     private String name;
+
+    @Column(name="surname")
     private String surname;
+
+    @Column(name = "cellphone")
     private int cellphone;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name="password")
     private String password;
 
+    @OneToMany(
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
+    )
+    private Set<Business> businesses = new HashSet<>();
 
-    public User(String name, String surname, int cellphone, String email, String password) {
-        this.name = name;
-        this.surname = surname;
-        this.cellphone = cellphone;
-        this.email = email;
-        this.password = password;
-    }
 
     //Crea la conexion entre el entity y el servicio, devolviendo o realizando las acciones que necesitemos.
     //Retornando un objeto de la clase UserDTO
