@@ -17,24 +17,14 @@ import java.util.Objects;
 public class Business {
 
     @Id
-    @SequenceGenerator(
-            name = "business_sequence",
-            sequenceName = "business_sequence",
-            allocationSize = 1,
-            initialValue = 3000
-    )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "business_sequence"
-    )
+            strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(
-            fetch = FetchType.LAZY,
-            optional = false
+            fetch = FetchType.EAGER
     )
-    @JoinColumn(name="user_id")
-    @ToString.Exclude
+    @JoinColumn(name="user_id", nullable = false)
     private User user;
 
 

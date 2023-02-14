@@ -91,8 +91,7 @@ public class AuthenticationServices {
                 userData.getSurname(),
                 userData.getCellphone(),
                 userData.getEmail(),
-                passwordEncoder.encode(userData.getPassword()),
-                null
+                passwordEncoder.encode(userData.getPassword())
         );
 
         //Save new user

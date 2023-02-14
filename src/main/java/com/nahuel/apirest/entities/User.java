@@ -22,16 +22,7 @@ import java.util.Set;
 public class  User implements UserDetails {
 
     @Id
-    @SequenceGenerator(
-            name = "user_sequence",
-            sequenceName = "user_sequence",
-            allocationSize = 1,
-            initialValue = 100
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_sequence"
-    ) //Genera una ID autoincrementable segun la ID mas grande en la DB
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //Genera una ID autoincrementable segun la ID mas grande en la DB
     private Long id;
 
     @Column(name="name")
@@ -48,12 +39,6 @@ public class  User implements UserDetails {
 
     @Column(name="password")
     private String password;
-
-    @OneToMany(
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
-    )
-    private Set<Business> businesses = new HashSet<>();
 
 
     //Crea la conexion entre el entity y el servicio, devolviendo o realizando las acciones que necesitemos.
