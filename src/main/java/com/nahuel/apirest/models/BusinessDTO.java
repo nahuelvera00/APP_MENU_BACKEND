@@ -9,5 +9,6 @@ import lombok.*;
 @Getter
 @Setter
 public class BusinessDTO {
+    private Long id;
     private String name;
 }

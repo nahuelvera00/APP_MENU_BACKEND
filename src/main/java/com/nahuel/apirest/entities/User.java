@@ -4,25 +4,32 @@ import com.nahuel.apirest.models.UserBasicDTO;
 import com.nahuel.apirest.models.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-@Data
-@Entity //Define esta clase como una entidad para poderla crear en la DB
+@ToString
 @Getter //Crea de manera interna los metodos Getter
 @Setter //Crea de manera interna los metodos Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users") //DEFINE el nombre de la TABLA
+@Entity //Define esta clase como una entidad para poderla crear en la DB
+@Table(name = "user_auth") //DEFINE el nombre de la TABLA
 public class  User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //Genera una ID autoincrementable segun la ID mas grande en la DB
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1,
+            initialValue = 10000
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
     private Long id;
 
     @Column(name="name")
@@ -39,6 +46,10 @@ public class  User implements UserDetails {
 
     @Column(name="password")
     private String password;
+
+    @OneToMany( fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Business> businesses;
 
 
     //Crea la conexion entre el entity y el servicio, devolviendo o realizando las acciones que necesitemos.
@@ -99,5 +110,18 @@ public class  User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        User user = (User) o;
+        return id != null && Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

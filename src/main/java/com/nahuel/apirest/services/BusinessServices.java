@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,20 +33,31 @@ public class BusinessServices {
         if(userLogin.isPresent()){
             User user = userLogin.get();
 
-            Business addBusiness = businessRepository.save(new Business(null, user, businessData.getName()));
+            Business newBusiness = businessRepository.save(new Business(null, businessData.getName(),user));
+
+            user.getBusinesses().add(newBusiness);
+
+            userRepository.save(user);
             return ResponseEntity.ok("add success");
         }
         return ResponseEntity.badRequest().build();
     }
 
-    public ResponseEntity<List<Business>> getBusiness(String token) {
+    public ResponseEntity<List<BusinessDTO>> getBusiness(String token) {
         String emailUser = jwtService.extractUsername(token.replace("Bearer ", ""));
         Optional<User> userLogin = userRepository.findByEmail(emailUser);
 
         if (userLogin.isPresent()) {
             User user = userLogin.get();
 
-            return ResponseEntity.ok(businessRepository.findByUser_Id(user.getId()));
+            List<BusinessDTO> businesses = new ArrayList<>();
+
+            for(Business business: user.getBusinesses()) {
+                BusinessDTO businessDTO = new BusinessDTO(business.getId(),business.getName());
+                businesses.add(businessDTO);
+            }
+
+            return ResponseEntity.ok(businesses);
         }
 
         return ResponseEntity.badRequest().build();

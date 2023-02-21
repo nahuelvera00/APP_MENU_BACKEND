@@ -29,7 +29,7 @@ public class BusinessController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<Business>> getBusiness(@RequestHeader(value="Authorization") String token){
+    public ResponseEntity<List<BusinessDTO>> getBusiness(@RequestHeader(value="Authorization") String token){
         return businessServices.getBusiness(token);
     }
 
