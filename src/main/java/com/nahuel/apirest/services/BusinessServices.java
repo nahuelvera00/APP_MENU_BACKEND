@@ -33,7 +33,7 @@ public class BusinessServices {
         if(userLogin.isPresent()){
             User user = userLogin.get();
 
-            Business newBusiness = businessRepository.save(new Business(null, businessData.getName(),user));
+            Business newBusiness = businessRepository.save(new Business(null, businessData.getName(),null ,user));
 
             user.getBusinesses().add(newBusiness);
 
@@ -53,7 +53,11 @@ public class BusinessServices {
             List<BusinessDTO> businesses = new ArrayList<>();
 
             for(Business business: user.getBusinesses()) {
-                BusinessDTO businessDTO = new BusinessDTO(business.getId(),business.getName());
+                BusinessDTO businessDTO = new BusinessDTO(
+                        business.getId(),
+                        business.getName(),
+                        business.getMenu()
+                );
                 businesses.add(businessDTO);
             }
 

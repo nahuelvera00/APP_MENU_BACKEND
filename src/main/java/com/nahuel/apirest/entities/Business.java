@@ -32,6 +32,9 @@ public class Business {
     @Column(name = "name")
     private String name;
 
+    @OneToOne
+    private Menu menu;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
